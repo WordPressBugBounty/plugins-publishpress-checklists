@@ -185,10 +185,7 @@
 
             var isSidebarOpened = wp.data.select('core/edit-post').isPublishSidebarOpened();
 
-            if (isSidebarOpened) {
-              this.elems.document.trigger(this.EVENT_VALIDATE_REQUIREMENTS);
-            } else {
-              // We need this as validate requirement is not been triggered for publish post. I'll leave the condition for now till i study this very well.
+            if (isSidebarOpened && !this.state.is_validating) {
               this.elems.document.trigger(this.EVENT_VALIDATE_REQUIREMENTS);
             }
           }.bind(this),
@@ -606,7 +603,8 @@
         content = content.replace(/<img[^>]*>/g, '');
 
         //remove element inside <a href></a> to avoid double counting for one link in case of <a href="Link">Link</a>
-        content = content.replace(/<a .*? *href="([^\'\"]+).*?<\/a>/g, '$1');
+        // Add spaces around each link to ensure they're separated
+        content = content.replace(/<a [^>]*href="([^"']*).*?<\/a>/g, ' $1 ');
 
         //check for every valid link and return array
         content = content.match(/(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/gi);
@@ -1588,7 +1586,7 @@
      * For the Classic Editor
      */
     var $content = $('#content');
-    var lastCount = 0;
+    var lastInternalCount = 0;
     var editor;
 
     /**
@@ -1611,19 +1609,24 @@
 
       count = PP_Checklists.extract_internal_links(text).length;
 
-      if (lastCount === count) {
+      console.log('[PublishPress Checklists] Internal Links Count:', count);
+
+      if (lastInternalCount === count) {
         return;
       }
 
       var min = parseInt(ppChecklists.requirements.internal_links.value[0]),
         max = parseInt(ppChecklists.requirements.internal_links.value[1]);
 
+      var validQuantity = PP_Checklists.check_valid_quantity(count, min, max);
+      console.log('[PublishPress Checklists] Valid Quantity Check:', { count, min, max, result: validQuantity });
+
       $('#pp-checklists-req-internal_links').trigger(
         PP_Checklists.EVENT_UPDATE_REQUIREMENT_STATE,
-        PP_Checklists.check_valid_quantity(count, min, max),
+        validQuantity
       );
 
-      lastCount = count;
+      lastInternalCount = count;
     }
 
     // For the editor.
@@ -1690,7 +1693,7 @@
      * For the Classic Editor
      */
     var $content = $('#content');
-    var lastCount = 0;
+    var lastExternalCount = 0;
     var editor;
 
     /**
@@ -1713,7 +1716,7 @@
 
       count = PP_Checklists.extract_external_links(text).length;
 
-      if (lastCount === count) {
+      if (lastExternalCount === count) {
         return;
       }
 
@@ -1725,7 +1728,7 @@
         PP_Checklists.check_valid_quantity(count, min, max),
       );
 
-      lastCount = count;
+      lastExternalCount = count;
     }
 
     // For the editor.

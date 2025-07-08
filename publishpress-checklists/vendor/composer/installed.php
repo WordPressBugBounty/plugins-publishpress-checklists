@@ -3,7 +3,7 @@
         'name' => 'publishpress/publishpress-checklists',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'd8830b1c952af5d41ebda6f5211db620d5e321b0',
+        'reference' => 'a612b1d69dd798b2fb9eee56cd2b5353b77f8d25',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'publishpress/publishpress-checklists' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'd8830b1c952af5d41ebda6f5211db620d5e321b0',
+            'reference' => 'a612b1d69dd798b2fb9eee56cd2b5353b77f8d25',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
